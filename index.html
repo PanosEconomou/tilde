@@ -52,22 +52,23 @@
 
   // prettier-ignore
   const COMMANDS = new Map([
-    ['a', { name: 'Arxiv', url: 'https://arxiv.org/list/hep-th/new' }],
-    ['b', { name: 'Brightspace', url: 'https://brightspace.nyu.edu/d2l/home' }],
-    ['c', { name: 'Calendar', url: 'https://calendar.google.com/calendar/u/0/r?pli=1' }],
-    ['d', { name: 'Discord', url: 'https://discord.com/channels/@me' }],
-    ['f', { name: 'Figma', url: 'https://www.figma.com' }],
-    ['g', { name: 'GitHub', searchTemplate: '/search?q={}', suggestions: ['g/copilot', 'g/trending'], url: 'https://github.com' }],
-    ['h', { name: 'Hyprland', url: 'https://wiki.hypr.land/' }],
-    ['m', { name: 'Mail', url: 'https://mail.google.com/mail/u/0/#inbox' }],
-    ['n', { name: 'Notes', url: 'https://notes.panos.wiki' }],
-    ['o', { name: 'Overleaf', url: 'https://www.overleaf.com/project' }],
-    ['r', { name: 'Reddit', url: 'https://www.reddit.com' }],
-    ['s', { name: 'Search', searchTemplate: '?q={}', url: 'https://duckduckgo.com' }],
-    ['t', { name: 'To Do List', url: 'https://github.com/users/PanosEconomou/projects/3' }],
-    ['w', { name: 'Nixos Packages', searchTemplate: '?&query={}', url: 'https://search.nixos.org/packages' }],
-    ['y', { name: 'YouTube', searchTemplate: '/results?search_query={}', url: 'https://www.youtube.com' }],
-    ['0', { name: 'localhost', url: 'http://localhost:3000' }],
+    ['a', {name: 'Arxiv', url: 'https://arxiv.org/list/hep-th/new'}],
+    ['b', {name: 'Brightspace', url: 'https://brightspace.nyu.edu/d2l/home'}],
+    ['c', {name: 'Calendar', url: 'https://calendar.google.com/calendar/u/0/r?pli=1'}],
+    ['d', {name: 'Discord', url: 'https://discord.com/channels/@me'}],
+    ['e', {name: 'Claude', url: 'https://claude.ai/new'}],
+    ['f', {name: 'Figma', url: 'https://www.figma.com'}],
+    ['g', {name: 'GitHub', searchTemplate: '/search?q={}', url: 'https://github.com/PanosEconomou'}],
+    ['h', {name: 'Hyprland', url: 'https://wiki.hypr.land/'}],
+    ['m', {name: 'Mail', url: 'https://mail.google.com/mail/u/0/#inbox'}],
+    ['n', {name: 'Notes', url: 'https://notes.panos.wiki'}],
+    ['o', {name: 'Overleaf', url: 'https://www.overleaf.com/project'}],
+    ['r', {name: 'Reddit', url: 'https://www.reddit.com'}],
+    ['s', {name: 'Search', searchTemplate: '?q={}', url: 'https://duckduckgo.com'}],
+    ['t', {name: 'To Do List', url: 'https://github.com/users/PanosEconomou/projects/3'}],
+    ['w', {name: 'Nixos Packages', searchTemplate: '?&query={}', url: 'https://search.nixos.org/packages'}],
+    ['y', {name: 'YouTube', searchTemplate: '/results?search_query={}', url: 'https://www.youtube.com'}],
+    ['0', {name: 'localhost', url: 'http://localhost:3000'}],
   ]);
 </script>
 
@@ -216,14 +217,14 @@
   class Commands extends HTMLElement {
     constructor() {
       super();
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({mode: 'open'});
       const template = document.getElementById('commands-template');
       const clone = template.content.cloneNode(true);
       const commands = clone.querySelector('.commands');
       const commandTemplate = document.getElementById('command-template');
 
       const entries = [...COMMANDS.entries()].filter(
-        ([, { name, url }]) => name && url
+        ([, {name, url}]) => name && url
       );
 
       const total = entries.length;
@@ -233,7 +234,7 @@
         Math.sin(Math.PI / total) / 0.8
       );
 
-      for (const [index, [key, { name, url }]] of entries.entries()) {
+      for (const [index, [key, {name, url}]] of entries.entries()) {
         const clone = commandTemplate.content.cloneNode(true);
         const li = clone.querySelector('li');
         const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
@@ -470,7 +471,7 @@
 
     constructor() {
       super();
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({mode: 'open'});
       const template = document.getElementById('search-template');
       const clone = template.content.cloneNode(true);
       this.#dialog = clone.querySelector('.dialog');
@@ -531,12 +532,12 @@
 
       if (this.#isUrl(query)) {
         const url = this.#hasProtocol(query) ? query : `https://${query}`;
-        return { query, url };
+        return {query, url};
       }
 
       if (COMMANDS.has(query)) {
-        const { url } = COMMANDS.get(query);
-        return { key: query, query, url };
+        const {url} = COMMANDS.get(query);
+        return {key: query, query, url};
       }
 
       let splitBy = CONFIG.commandSearchDelimiter;
@@ -547,7 +548,7 @@
         const template = new URL(command.searchTemplate ?? '', command.url);
         const search = rawSearch.trim();
         const url = Search.#formatSearchUrl(decodeURI(template.href), search);
-        return { key: searchKey, query, search, splitBy, url };
+        return {key: searchKey, query, search, splitBy, url};
       }
 
       splitBy = CONFIG.commandPathDelimiter;
@@ -556,11 +557,11 @@
       if (COMMANDS.has(pathKey)) {
         const command = COMMANDS.get(pathKey);
         const url = `${new URL(command.url).origin}/${path}`;
-        return { key: pathKey, path, query, splitBy, url };
+        return {key: pathKey, path, query, splitBy, url};
       }
 
       const url = Search.#formatSearchUrl(CONFIG.defaultSearchTemplate, query);
-      return { query, search: query, url };
+      return {query, search: query, url};
     };
 
     #open() {
@@ -587,7 +588,7 @@
 
           this.#closeController = null;
         },
-        { once: true, signal: this.#closeController.signal }
+        {once: true, signal: this.#closeController.signal}
       );
     }
 
